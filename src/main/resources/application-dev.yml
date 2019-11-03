@@ -1,0 +1,31 @@
+#数据库配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://10.141.47.42:5736/shipyard?serverTimezone=GMT%2B8&Unicode=true&characterEncoding=utf-8&useSSL=false
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+
+mybatis:
+  type-aliases-package: com.hwy.shipyard.dataobject
+  #Mybatis驼峰转换与控制台打印sql
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+#Pagehelper配置
+pagehelper:
+  reasonable: false
+  support-methods-arguments: true
+  params: count=countSql
+  page-size-zero: true
+  helper-dialect: mysql
+
+server:
+  port: 8081
