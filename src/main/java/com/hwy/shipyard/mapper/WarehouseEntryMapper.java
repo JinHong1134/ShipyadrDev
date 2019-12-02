@@ -13,13 +13,17 @@ public interface WarehouseEntryMapper {
      * 入库表新增
      */
 
+/*    @Insert("INSERT INTO warehouse_entry(warehouse_entry_id,warehouse_id,warehouse_name,entry_time,operator_name,remark,entry_state,warehouse_entry_check_bits,warehouse_entry_field0,signature) " +
+            "values(#{warehouseEntryId},#{warehouseId},#{warehouseName},#{entryTime},#{operatorName},#{remark},#{entryState},#{warehouseEntryCheckBits},#{warehouseEntryField0},#{signature})")
+    @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
+    int addEntry(WarehouseEntry warehouseEntry);*/
     @Insert("INSERT INTO warehouse_entry(warehouse_entry_id,warehouse_id,warehouse_name,entry_time,operator_name,remark,entry_state,warehouse_entry_check_bits,warehouse_entry_field0) " +
             "values(#{warehouseEntryId},#{warehouseId},#{warehouseName},#{entryTime},#{operatorName},#{remark},#{entryState},#{warehouseEntryCheckBits},#{warehouseEntryField0})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int addEntry(WarehouseEntry warehouseEntry);
 
-    @Insert("INSERT INTO warehouse_entry_detail(warehouse_entry_id,product_id,product_name,product_specification,entry_quantity,product_unit,product_specification,location,warehouse_entry_detail_field0) " +
-            "VALUES(#{warehouseEntryId},#{productId},#{productName},#{productSpecification},#{entryQuantity},#{productUnit},#{productSpecification},#{location},#{warehouseEntryDetailField0})")
+    @Insert("INSERT INTO warehouse_entry_detail(warehouse_entry_id,product_id,product_name,entry_quantity,product_unit,product_specification,location,warehouse_entry_detail_field0) " +
+            "VALUES(#{warehouseEntryId},#{productId},#{productName},#{entryQuantity},#{productUnit},#{productSpecification},#{location},#{warehouseEntryDetailField0})")
     @Options(useGeneratedKeys = true, keyProperty = "warehouseEntryDetailId",keyColumn="warehouse_entry_detail_id")
     int addEntryDetail(WarehouseEntryDetail warehouseEntryDetail);
 
@@ -53,4 +57,7 @@ public interface WarehouseEntryMapper {
     Integer getEntryCount();
     @Select("SELECT COUNT(0) count FROM warehouse_entry_detail")
     Integer getEntryDetailCount();
+
+    @Select("SELECT *,max(id) FROM warehouse_entry")
+    WarehouseEntry getNewWarehouseEntry();
 }

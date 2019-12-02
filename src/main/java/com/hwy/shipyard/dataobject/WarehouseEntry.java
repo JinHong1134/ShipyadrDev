@@ -64,6 +64,8 @@ public class WarehouseEntry {
      */
     private String warehouseEntryCheckBits;
 
+//    private String signature;
+
     /**
      * 预留字段
      */

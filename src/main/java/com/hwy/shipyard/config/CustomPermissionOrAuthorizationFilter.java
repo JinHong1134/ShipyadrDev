@@ -13,7 +13,7 @@ import java.util.Set;
  * 实现权限或功能
  */
 public class CustomPermissionOrAuthorizationFilter extends PermissionsAuthorizationFilter {
-    @Override
+/*    @Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
         Subject subject = this.getSubject(request, response);
         String[] permsArray = (String[]) mappedValue;
@@ -34,6 +34,6 @@ public class CustomPermissionOrAuthorizationFilter extends PermissionsAuthorizat
             }
         }
         return false;
-    }
+    }*/
 }
 

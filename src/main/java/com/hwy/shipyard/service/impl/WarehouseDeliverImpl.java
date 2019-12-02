@@ -8,6 +8,7 @@ import com.hwy.shipyard.dataobject.Allocation;
 import com.hwy.shipyard.dataobject.User;
 import com.hwy.shipyard.dataobject.WarehouseDeliver;
 import com.hwy.shipyard.dataobject.WarehouseDeliverDetail;
+import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.mapper.WarehouseDeliverMapper;
 import com.hwy.shipyard.service.WarehouseDeliverService;
 import com.hwy.shipyard.utils.JsonData;
@@ -25,6 +26,7 @@ public class WarehouseDeliverImpl implements WarehouseDeliverService {
 
     @Autowired
     WarehouseDeliverMapper warehouseDeliverMapper;
+
 
     @Override
     public Object addDeliver(WarehouseDeliver warehouseDeliver) {

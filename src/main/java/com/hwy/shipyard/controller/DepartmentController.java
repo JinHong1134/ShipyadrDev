@@ -19,7 +19,7 @@ public class DepartmentController {
 
     //增加
     @PostMapping("/department/add")
-    public Object addDepartment(@ModelAttribute Department department){
+    public Object addDepartment(@RequestBody Department department){
         return depService.addDepartment(department);
     }
 
@@ -31,7 +31,7 @@ public class DepartmentController {
 
     //更新
     @PostMapping("/department/update")
-    public Object updateDepartment(@ModelAttribute Department department){
+    public Object updateDepartment(@RequestBody Department department){
         return depService.updateDepartment(department);
     }
 }

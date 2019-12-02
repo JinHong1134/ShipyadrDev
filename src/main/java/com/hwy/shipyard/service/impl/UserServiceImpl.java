@@ -3,7 +3,9 @@ package com.hwy.shipyard.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import com.hwy.shipyard.dataobject.Role;
 import com.hwy.shipyard.dataobject.User;
+import com.hwy.shipyard.dataobject.UserRole;
 import com.hwy.shipyard.mapper.RoleMapper;
 import com.hwy.shipyard.mapper.UserMapper;
 import com.hwy.shipyard.service.UserService;
@@ -41,7 +43,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(String userId) {
-        return userMapper.getUserById(userId);
+        User user = userMapper.getUserById(userId);
+        //用户的角色集合
+        List<Role> roleList =  roleMapper.findRoleListByUserId(user.getUserId());
+        user.setRoleList(roleList);
+
+        return user;
 
     }
 
@@ -60,6 +67,7 @@ public class UserServiceImpl implements UserService {
     public Object addUser(User user) {
         String password = user.getUserPassword();
         user.setUserPassword(new SimpleHash("md5",password,"fkn",2).toString());
+        System.out.println(user.getUserPassword());
         try {
             userMapper.addUser(user);
             return JsonData.buildSuccess();
@@ -93,17 +101,38 @@ public class UserServiceImpl implements UserService {
 
 
 
-    /*@Override
+    @Override
     public User getUserByUsername(String username) {
 
         User user = userMapper.getUserByUsername(username);
 
         //用户的角色集合
-        List<Role> roleList =  roleMapper.findRoleListByUserId(user.getId());
+        List<Role> roleList =  roleMapper.findRoleListByUserId(user.getUserId());
 
         user.setRoleList(roleList);
 
         return user;
     }
-     */
+
+    @Override
+    public Object addUserRole(UserRole userRole) {
+        try {
+            roleMapper.addUserRole(userRole);
+            return JsonData.buildSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError();
+        }
+    }
+
+    @Override
+    public Object delUserRole(String userId) {
+        try{
+            roleMapper.deleteUserRole(userId);
+            return JsonData.buildSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError();
+        }
+    }
 }

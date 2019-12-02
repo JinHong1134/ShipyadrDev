@@ -8,6 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.hwy.shipyard.dataobject.WarehouseEntry;
 import com.hwy.shipyard.dataobject.WarehouseEntryDetail;
+import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.service.WarehouseEntryService;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/warehouse/entry")
+@RequestMapping("/authc/warehouse/entry")
 public class WarehouseEntryController {
     @Autowired
     WarehouseEntryService warehouseEntryService;
 
+    @Autowired
+    ProductMapper productMapper;
 
 
     @GetMapping("/list")
@@ -47,6 +50,16 @@ public class WarehouseEntryController {
     @Transactional
     @PostMapping("/add")
     public Object addEntry(@RequestBody String requestJson){
+/*        try {
+            warehouseEntryService.addWarehouseEntry(warehouseEntry);
+            return JsonData.buildSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError();
+        }*/
+
+
+
         Gson gson = new Gson();
 
         //将json字符串转换为JsonObject对象
@@ -67,6 +80,7 @@ public class WarehouseEntryController {
             warehouseEntryService.addWarehouseEntry(warehouseEntry);
             for (WarehouseEntryDetail warehouseEntryDetail : warehouseEntryDetails) {
                 warehouseEntryService.addWarehouseEntryDetail(warehouseEntryDetail);
+                productMapper.updateProductNum(warehouseEntryDetail.getProductId(),warehouseEntryDetail.getEntryQuantity(),warehouseEntry.getWarehouseId());
             }
             return JsonData.buildSuccess();
         } catch (Exception e) {

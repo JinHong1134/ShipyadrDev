@@ -15,6 +15,7 @@ import java.util.Set;
 public class CustomRolesOrAuthorizationFilter extends AuthorizationFilter {
 
 
+    @SuppressWarnings({"unchecked"})
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
 
         Subject subject = getSubject(request, response);
@@ -30,10 +31,10 @@ public class CustomRolesOrAuthorizationFilter extends AuthorizationFilter {
 
 
         Set<String> roles = CollectionUtils.asSet(rolesArray);
-
         //当前subject是roles 中的任意一个，则有权限访问
-        for(String role : roles){
+        for(String role : roles){System.out.println(subject.hasRole(role)+"rjh");
             if(subject.hasRole(role)){
+
                 return true;
             }
         }

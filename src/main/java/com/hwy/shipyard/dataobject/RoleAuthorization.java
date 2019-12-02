@@ -7,7 +7,7 @@ import lombok.Data;
  * 角色权限关联表
  */
 @Data
-public class RolePermission {
+public class RoleAuthorization {
 
     /**
      * 关联表id，主键

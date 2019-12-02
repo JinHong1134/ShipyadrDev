@@ -6,6 +6,7 @@ package com.hwy.shipyard.controller;
 import com.hwy.shipyard.dataobject.User;
 import com.hwy.shipyard.dataobject.UserQuery;
 
+import com.hwy.shipyard.dataobject.UserRole;
 import com.hwy.shipyard.service.UserService;
 import com.hwy.shipyard.utils.JsonData;
 import org.apache.shiro.SecurityUtils;
@@ -40,7 +41,6 @@ public class UserController {
     }
 
     //增加用户
-
     @PostMapping("/add")
     public Object addUser(@RequestBody User user) {
         return userService.addUser(user);
@@ -49,6 +49,7 @@ public class UserController {
     //删除用户
     @GetMapping("del")
     public Object delUser(String userId){
+        userService.delUserRole(userId);
         return userService.delUser(userId);
     }
 
@@ -58,34 +59,26 @@ public class UserController {
         return userService.updateUser(user);
     }
 
+
     /**
-     * 登录接口
-     * @param userQuery
-     * @param request
-     * @param response
+     * 重置用户权限
+     * @param userRole
      * @return
      */
-    @PostMapping("login")
-    public JsonData login(@RequestBody UserQuery userQuery, HttpServletRequest request, HttpServletResponse response){
-
-        Subject subject = SecurityUtils.getSubject();
-        userQuery.setUserPassword(new SimpleHash("md5",userQuery.getUserPassword(),"fkn",2).toString());
-        Map<String,Object> info = new HashMap<>();
-        try {
-            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(userQuery.getUserId(), userQuery.getUserPassword());
-            subject.login(usernamePasswordToken);
-            info.put("msg","登录成功");
-            info.put("session_id", subject.getSession().getId());
-            return JsonData.buildSuccess(info);
-        }catch (Exception e){
-            e.printStackTrace();
-            return JsonData.buildError("账号或者密码错误");
-        }
+    @PostMapping("role/update")
+    public Object updateUserRole(@RequestBody UserRole userRole){
+        userService.delUserRole(userRole.getUserId());
+        return userService.addUserRole(userRole);
     }
 
-    @GetMapping("admin")
-    public Object admin(){
-        return JsonData.buildSuccess();
+    /**
+     * 为用户赋予权限
+     * @param userRole
+     * @return
+     */
+    @PostMapping("role/add")
+    public Object addUserRole(@RequestBody UserRole userRole){
+        return userService.addUserRole(userRole);
     }
 
 

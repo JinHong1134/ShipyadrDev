@@ -7,6 +7,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.hwy.shipyard.dataobject.Allocation;
 import com.hwy.shipyard.dataobject.AllocationDetail;
+import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.service.AllocationService;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class AllocationController {
     @Autowired
     private AllocationService allocationService;
 
+    @Autowired
+    private ProductMapper productMapper;
 
     @PostMapping("/add")
     public Object addAllocationDetail(@RequestBody String json) {
@@ -40,10 +43,18 @@ public class AllocationController {
         Allocation allocation = gson.fromJson(allocationObject,new TypeToken<Allocation>(){}.getType());
         List<AllocationDetail> allocationDetailList = gson.fromJson(list, new TypeToken<List<AllocationDetail>>() {
         }.getType());
+
+        //判断库存是否充足
+        for (AllocationDetail allocationDetail : allocationDetailList) {
+            if(allocationDetail.getProductQuantity() > productMapper.getProductNum(allocationDetail.getProductId(),allocation.getWarehouseDeliverId())) return JsonData.buildError(allocationDetail.getProductName()+"库存不足",-2);
+        }
+
+
         try {
             allocationService.addAllocation(allocation);
             for (AllocationDetail allocationDetail : allocationDetailList) {
                 allocationService.addAllocationDetail(allocationDetail);
+                productMapper.updateProductNum(allocationDetail.getProductId(),allocationDetail.getProductQuantity(),allocation.getWarehouseDeliverId());
             }
             return JsonData.buildSuccess();
         } catch (Exception e) {

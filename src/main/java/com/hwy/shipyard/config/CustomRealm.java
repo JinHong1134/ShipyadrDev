@@ -1,6 +1,8 @@
 package com.hwy.shipyard.config;
 
 
+
+
 import com.hwy.shipyard.dataobject.Authorization;
 import com.hwy.shipyard.dataobject.Role;
 import com.hwy.shipyard.dataobject.User;
@@ -13,8 +15,8 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +32,15 @@ public class CustomRealm  extends AuthorizingRealm {
         System.out.println("授权");
 
         User user1 = (User)principalCollection.getPrimaryPrincipal();
-        User user = (User) userService.getUserByUserName(user1.getUserName());
+        User user = userService.getUserById(user1.getUserId());
 
         List<String> stringRoleList = new ArrayList<>();
         List<String> stringPermissionList = new ArrayList<>();
 
+
         List<Role> roleList = user.getRoleList();
 
+        System.out.println(roleList);
         for (Role role : roleList){
             stringRoleList.add(role.getRoleName());
 
@@ -53,6 +57,36 @@ public class CustomRealm  extends AuthorizingRealm {
         simpleAuthorizationInfo.addRoles(stringRoleList);
         simpleAuthorizationInfo.addStringPermissions(stringPermissionList);
         return simpleAuthorizationInfo;
+/*        System.out.println("授权 doGetAuthorizationInfo");
+        User user1 = (User)principals.getPrimaryPrincipal();
+        User user = userService.getUserById(user1.getUserId());
+
+
+        List<String> stringRoleList = new ArrayList<>();
+        List<String> stringPermissionList = new ArrayList<>();
+
+
+        List<Role> roleList = user.getRoleList();
+
+        for(Role role : roleList){
+            stringRoleList.add(role.getRoleName());
+
+            List<Permission> permissionList = role.getPermissionList();
+
+            for(Permission p: permissionList){
+                if(p!=null){
+                    stringPermissionList.add(p.getName());
+                }
+            }
+
+        }
+
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.addRoles(stringRoleList);
+        simpleAuthorizationInfo.addStringPermissions(stringPermissionList);
+
+        return simpleAuthorizationInfo;*/
+
     }
 
     @Override
@@ -61,10 +95,9 @@ public class CustomRealm  extends AuthorizingRealm {
 
         String id = (String)authenticationToken.getPrincipal();
 
-        User user = (User) userService.getUserById(id);
+        User user = userService.getUserById(id);
 
         String password = user.getUserPassword();
-        System.out.println("password"+password);
         if (password==null || "".equals(password)){
             return null;
         }

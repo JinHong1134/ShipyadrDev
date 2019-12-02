@@ -4,14 +4,20 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hwy.shipyard.dataobject.WarehouseEntry;
 import com.hwy.shipyard.dataobject.WarehouseEntryDetail;
+import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.mapper.WarehouseEntryMapper;
 import com.hwy.shipyard.service.WarehouseEntryService;
 import com.hwy.shipyard.utils.JsonData;
+import com.hwy.shipyard.utils.SignatureRsa;
+import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static com.hwy.shipyard.utils.EncryptUtils.saltEncrypt;
 
@@ -21,24 +27,49 @@ public class WarehouseEntryImpl implements WarehouseEntryService {
     @Autowired
     WarehouseEntryMapper warehouseEntryMapper;
 
+
     @Override
     public Object addWarehouseEntry(WarehouseEntry warehouseEntry) {
+        /*String preHash;
         try {
             //加密处理
+            try {
+                WarehouseEntry warehouseEntry1 = warehouseEntryMapper.getNewWarehouseEntry();
+                preHash = warehouseEntry1.getWarehouseEntryCheckBits();
+            } catch (Exception e) {
+                preHash = "JinHong";
+            }
+            String str = warehouseEntry.toString() + preHash;
+            String checkBits = saltEncrypt(str, "fkn");
+            warehouseEntry.setWarehouseEntryCheckBits(checkBits);
+            Map map = SignatureRsa.jdkRSA(checkBits);
+            boolean bool= (boolean) map.get("bool");
+            String signature = (String) map.get("signature");
+            warehouseEntry.setSignature(signature);
+            //System.out.println(warehouseEntry.getSignature()+warehouseEntry.getWarehouseEntryCheckBits());
+            if(bool==true){
+                warehouseEntryMapper.addEntry(warehouseEntry);
+                return JsonData.buildSuccess();
+            }else return JsonData.buildError();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError("添加失败");
+        }*/
+        try {
             warehouseEntryMapper.addEntry(warehouseEntry);
             String preHash;
-            if(warehouseEntry.getId() == 1) {
+            if (warehouseEntry.getId() == 1 ){
                 preHash = "fkn";
             }else {
                 preHash = warehouseEntryMapper.getEntry(warehouseEntry.getId() - 1).getWarehouseEntryCheckBits();
             }
             String str = warehouseEntry.toString() + preHash;
             String checkBits = saltEncrypt(str, "fkn");
-            warehouseEntryMapper.updateEntry(checkBits, warehouseEntry.getId());
+            warehouseEntryMapper.updateEntry(checkBits,warehouseEntry.getId());
             return JsonData.buildSuccess();
         } catch (Exception e) {
             e.printStackTrace();
-            return JsonData.buildError("添加失败");
+            return JsonData.buildError();
         }
     }
 
@@ -146,5 +177,25 @@ public class WarehouseEntryImpl implements WarehouseEntryService {
         }
 
     }
+
+    /*public static void main(String[] args) {
+
+        Date date = new Date();
+        WarehouseEntry warehouseEntry = new WarehouseEntry();
+        warehouseEntry.setEntryState(0);
+        warehouseEntry.setWarehouseEntryField0(null);
+        warehouseEntry.setOperatorName("rjh");
+        warehouseEntry.setRemark("r");
+        warehouseEntry.setEntryTime(date);
+        warehouseEntry.setOperatorName("rjh");
+        warehouseEntry.setWarehouseEntryId("A1");
+        warehouseEntry.setWarehouseId("A1");
+        warehouseEntry.setWarehouseName("JH");
+        System.out.println(warehouseEntry.toString());
+        WarehouseEntryImpl warehouse = new WarehouseEntryImpl();
+
+        warehouse.addWarehouseEntry(warehouseEntry);
+
+    }*/
 
 }

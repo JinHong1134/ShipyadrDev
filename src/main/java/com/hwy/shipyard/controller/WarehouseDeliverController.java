@@ -5,8 +5,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.hwy.shipyard.dataobject.Product;
 import com.hwy.shipyard.dataobject.WarehouseDeliver;
 import com.hwy.shipyard.dataobject.WarehouseDeliverDetail;
+import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.service.WarehouseDeliverService;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class WarehouseDeliverController {
 
     @Autowired
     private WarehouseDeliverService warehouseDeliverService;
+
+    @Autowired
+    ProductMapper productMapper;
 
     @GetMapping("/list")
     public Object getAll(int pageNum,int pageSize){
@@ -50,11 +55,16 @@ public class WarehouseDeliverController {
         //明细转换
         List<WarehouseDeliverDetail> warehouseEntryDetails = gson.fromJson(list, new TypeToken<List<WarehouseDeliverDetail>>() {
         }.getType());
+        for (WarehouseDeliverDetail warehouseDeliverDetail:warehouseEntryDetails){
+            if(warehouseDeliverDetail.getDeliverQuantity() < productMapper.getProductNum(warehouseDeliverDetail.getProductId(),warehouseDeliver.getWarehouseId()))
+                return JsonData.buildError(warehouseDeliverDetail.getProductName()+"产品库存不足",-2);
+        }
 
         try {
             warehouseDeliverService.addDeliver(warehouseDeliver);
             for (WarehouseDeliverDetail warehouseDeliverDetail:warehouseEntryDetails){
                 warehouseDeliverService.addDetail(warehouseDeliverDetail);
+                productMapper.updateProductNum(warehouseDeliverDetail.getProductId(),-warehouseDeliverDetail.getDeliverQuantity(),warehouseDeliver.getWarehouseId());
             }
             return JsonData.buildSuccess();
         } catch (Exception e) {
