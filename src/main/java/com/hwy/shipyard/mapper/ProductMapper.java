@@ -40,13 +40,13 @@ public interface ProductMapper {
     void update(Product product);
 
     //更新产品库存
-    @Update("UPDATE IGNORE product SET product_stock = product_stock + ${productNum}" +
-            "where product_id=#{productId} and warehouse_id = #{warehouseId}")
-    int updateProductNum(String productId,int productNum, String warehouseId);
+    @Update("UPDATE IGNORE product SET product_stock = product_stock + ${productNum} " +
+            "where product_id=#{productId} and warehouse_name = #{warehouseName}")
+    int updateProductNum(String productId,int productNum, String warehouseName);
 
     //获取当前的库存
-    @Select("SELECT product_stock from product WHERE product_id = #{productId} and warehouse_id = #{warehouseId}")
-    int getProductNum(String productId,String warehouseId);
+    @Select("SELECT product_stock from product WHERE product_id = #{productId} and warehouse_name = #{warehouseName}")
+    int getProductNum(String productId,String warehouseName);
 
     //删除
     @Delete("delete from product where product_id=#{productId}")

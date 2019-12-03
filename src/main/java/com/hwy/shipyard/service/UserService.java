@@ -65,8 +65,9 @@ public interface UserService {
      * @param userRole
      * @return 0 成功， -1 失败
      */
-    Object addUserRole(UserRole userRole);
+    Object addUserRole(String userId,int roleId,String userPosition);
 
     Object delUserRole(String userId);
+
 
 }

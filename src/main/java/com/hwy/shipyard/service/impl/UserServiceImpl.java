@@ -67,9 +67,10 @@ public class UserServiceImpl implements UserService {
     public Object addUser(User user) {
         String password = user.getUserPassword();
         user.setUserPassword(new SimpleHash("md5",password,"fkn",2).toString());
-        System.out.println(user.getUserPassword());
+        List<Role> roles = user.getRoleList();
         try {
             userMapper.addUser(user);
+
             return JsonData.buildSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,9 +116,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Object addUserRole(UserRole userRole) {
+    public Object addUserRole(String userId,int roleId,String userPosition) {
         try {
-            roleMapper.addUserRole(userRole);
+            roleMapper.addUserRole(userId,roleId,userPosition);
             return JsonData.buildSuccess();
         } catch (Exception e) {
             e.printStackTrace();

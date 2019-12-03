@@ -56,7 +56,7 @@ public class WarehouseDeliverController {
         List<WarehouseDeliverDetail> warehouseEntryDetails = gson.fromJson(list, new TypeToken<List<WarehouseDeliverDetail>>() {
         }.getType());
         for (WarehouseDeliverDetail warehouseDeliverDetail:warehouseEntryDetails){
-            if(warehouseDeliverDetail.getDeliverQuantity() < productMapper.getProductNum(warehouseDeliverDetail.getProductId(),warehouseDeliver.getWarehouseId()))
+            if(warehouseDeliverDetail.getDeliverQuantity() > productMapper.getProductNum(warehouseDeliverDetail.getProductId(),warehouseDeliver.getWarehouseName()))
                 return JsonData.buildError(warehouseDeliverDetail.getProductName()+"产品库存不足",-2);
         }
 
@@ -64,7 +64,7 @@ public class WarehouseDeliverController {
             warehouseDeliverService.addDeliver(warehouseDeliver);
             for (WarehouseDeliverDetail warehouseDeliverDetail:warehouseEntryDetails){
                 warehouseDeliverService.addDetail(warehouseDeliverDetail);
-                productMapper.updateProductNum(warehouseDeliverDetail.getProductId(),-warehouseDeliverDetail.getDeliverQuantity(),warehouseDeliver.getWarehouseId());
+                productMapper.updateProductNum(warehouseDeliverDetail.getProductId(),-warehouseDeliverDetail.getDeliverQuantity(),warehouseDeliver.getWarehouseName());
             }
             return JsonData.buildSuccess();
         } catch (Exception e) {

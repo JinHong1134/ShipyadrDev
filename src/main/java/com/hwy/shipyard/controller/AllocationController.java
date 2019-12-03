@@ -46,7 +46,7 @@ public class AllocationController {
 
         //判断库存是否充足
         for (AllocationDetail allocationDetail : allocationDetailList) {
-            if(allocationDetail.getProductQuantity() > productMapper.getProductNum(allocationDetail.getProductId(),allocation.getWarehouseDeliverId())) return JsonData.buildError(allocationDetail.getProductName()+"库存不足",-2);
+            if(allocationDetail.getProductQuantity() > productMapper.getProductNum(allocationDetail.getProductId(),allocation.getWarehouseDeliver())) return JsonData.buildError(allocationDetail.getProductName()+"库存不足",-2);
         }
 
 
@@ -54,7 +54,7 @@ public class AllocationController {
             allocationService.addAllocation(allocation);
             for (AllocationDetail allocationDetail : allocationDetailList) {
                 allocationService.addAllocationDetail(allocationDetail);
-                productMapper.updateProductNum(allocationDetail.getProductId(),allocationDetail.getProductQuantity(),allocation.getWarehouseDeliverId());
+                productMapper.updateProductNum(allocationDetail.getProductId(),allocationDetail.getProductQuantity(),allocation.getWarehouseDeliver());
             }
             return JsonData.buildSuccess();
         } catch (Exception e) {

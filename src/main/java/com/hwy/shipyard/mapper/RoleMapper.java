@@ -31,7 +31,7 @@ public interface RoleMapper {
     //更新用户权限
     @Insert("INSERT INTO user_role(user_id,role_id,role_description) VALUES(#{userId},#{roleId},#{userRoleDescription}) ")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
-    int addUserRole(UserRole userRole);
+    int addUserRole(String userId,int roleId,String userRoleDescription);
 
     //删除用户所有权限
     @Delete("DELETE FROM user_role WHERE user_id = #{userId}")

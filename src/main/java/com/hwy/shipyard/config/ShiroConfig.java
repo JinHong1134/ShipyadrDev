@@ -82,6 +82,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/schedule/update/**","roleOrFilter[root,schedule_root]");
         filterChainDefinitionMap.put("/schedule/**","roleOrFilter[root,schedule_admin,schedule_root]");
         filterChainDefinitionMap.put("/maintenance/update/**","roleOrFilter[root,schedule_root]");
+        filterChainDefinitionMap.put("/maintenance/all","roleOrFilter[root,schedule_root,schedule_admin]");
         filterChainDefinitionMap.put("/request/**","roleOrFilter[root,schedule_admin,schedule_root]");
 
         //后台管理系统仅root用户可访问

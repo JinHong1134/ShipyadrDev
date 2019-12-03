@@ -3,6 +3,7 @@ package com.hwy.shipyard.controller;
 
 
 
+import com.hwy.shipyard.dataobject.Role;
 import com.hwy.shipyard.dataobject.User;
 import com.hwy.shipyard.dataobject.UserQuery;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,7 +45,19 @@ public class UserController {
     //增加用户
     @PostMapping("/add")
     public Object addUser(@RequestBody User user) {
-        return userService.addUser(user);
+        user.setUserPassword(new SimpleHash("md5",user.getUserPassword(),"fkn",2).toString());
+        List<Role> roles = user.getRoleList();
+        try{
+            userService.addUser(user);
+            for (Role role : roles){
+                userService.addUserRole(user.getUserId(),role.getRoleId(),user.getUserPosition());
+            }
+            return JsonData.buildSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError();
+        }
+
     }
 
     //删除用户
@@ -56,7 +70,18 @@ public class UserController {
     //更新用户,更新所有字段
     @PostMapping("update")
     public Object updateUser(@RequestBody User user){
-        return userService.updateUser(user);
+        List<Role> roles = user.getRoleList();
+        try{
+            userService.delUserRole(user.getUserId());
+            for (Role role : roles){
+                userService.addUserRole(user.getUserId(),role.getRoleId(),user.getUserPosition());
+            }
+            return userService.updateUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError();
+        }
+
     }
 
 
@@ -68,7 +93,7 @@ public class UserController {
     @PostMapping("role/update")
     public Object updateUserRole(@RequestBody UserRole userRole){
         userService.delUserRole(userRole.getUserId());
-        return userService.addUserRole(userRole);
+        return userService.addUserRole(userRole.getUserId(),userRole.getRoleId(),userRole.getUserRoleDescription());
     }
 
     /**
@@ -78,8 +103,9 @@ public class UserController {
      */
     @PostMapping("role/add")
     public Object addUserRole(@RequestBody UserRole userRole){
-        return userService.addUserRole(userRole);
+        return userService.addUserRole(userRole.getUserId(),userRole.getRoleId(),userRole.getUserRoleDescription());
     }
+
 
 
 }

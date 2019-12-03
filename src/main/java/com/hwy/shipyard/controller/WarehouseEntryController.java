@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/authc/warehouse/entry")
+@RequestMapping("/warehouse/entry")
 public class WarehouseEntryController {
     @Autowired
     WarehouseEntryService warehouseEntryService;
@@ -80,7 +80,7 @@ public class WarehouseEntryController {
             warehouseEntryService.addWarehouseEntry(warehouseEntry);
             for (WarehouseEntryDetail warehouseEntryDetail : warehouseEntryDetails) {
                 warehouseEntryService.addWarehouseEntryDetail(warehouseEntryDetail);
-                productMapper.updateProductNum(warehouseEntryDetail.getProductId(),warehouseEntryDetail.getEntryQuantity(),warehouseEntry.getWarehouseId());
+                productMapper.updateProductNum(warehouseEntryDetail.getProductId(),warehouseEntryDetail.getEntryQuantity(),warehouseEntry.getWarehouseName());
             }
             return JsonData.buildSuccess();
         } catch (Exception e) {
