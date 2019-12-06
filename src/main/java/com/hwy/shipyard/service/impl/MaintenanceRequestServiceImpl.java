@@ -78,26 +78,33 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
 
     @Override
     public Object check() {
-        int i = 2;//从2号开始
-        int count = mapper.getCount()+i-1;
+        int last = mapper.getLast().getSortId();
+        int i = last;
+        int count = mapper.getCount();
 
         while (true) {
-            if (i==count-1){
-                return JsonData.buildSuccess(null,2);
+            if (last - i == count - 1) {
+                return JsonData.buildSuccess(null, 2);
             }
-            MaintenanceRequest maintenanceRequest = mapper.getBySId(i);
+            try {
+                MaintenanceRequest maintenanceRequest = mapper.getBySId(i);
 
-            String s1 = maintenanceRequest.getRequestCheck();
+                String s1 = maintenanceRequest.getRequestCheck();
 
-            String s2 = EncryptUtils.saltEncrypt(maintenanceRequest.toString(), "fkn");
+                String s2 = EncryptUtils.saltEncrypt(maintenanceRequest.toString(), "fkn");
 
-            if (s1.equals(s2)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(maintenanceRequest, "编号为" + maintenanceRequest.getRequestId() + "的记录与预期不符");
+                if (s1.equals(s2)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(maintenanceRequest, "编号为" + maintenanceRequest.getRequestId() + "的记录与预期不符");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+mapper.getBySId(i).getRequestId()+"前一条记录被删除",mapper.getBySId(i).getRequestId(),0);
+
             }
-
         }
+
 
     }
 

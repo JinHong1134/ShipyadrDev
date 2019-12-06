@@ -4,9 +4,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hwy.shipyard.dataobject.Purchase;
+import com.hwy.shipyard.service.PurchaseService;
 import com.hwy.shipyard.enums.PurchaseStateEnum;
 import com.hwy.shipyard.mapper.PurchaseMapper;
-import com.hwy.shipyard.service.PurchaseService;
+import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,16 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     public int updateState(String purchaseId, int purchaseState) {
         return purchaseMapper.updateById(purchaseId, purchaseState);
+    }
+
+    @Override
+    public Object getStateNum() {
+        try{
+            return JsonData.buildSuccess(purchaseMapper.getStateNum());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError("查找失败");
+        }
     }
 
 

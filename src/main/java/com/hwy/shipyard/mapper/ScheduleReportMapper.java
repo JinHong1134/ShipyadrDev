@@ -1,6 +1,5 @@
 package com.hwy.shipyard.mapper;
 
-import com.hwy.shipyard.dataobject.Schedule;
 import com.hwy.shipyard.dataobject.ScheduleReport;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -35,4 +34,8 @@ public interface ScheduleReportMapper {
 
     @Select("select count(*) as count from schedule_report")
     Integer getCount();
+
+    @Select("SELECT * FROM schedule_report ORDER BY sort_id DESC LIMIT 1")
+    ScheduleReport getLast();
+
 }

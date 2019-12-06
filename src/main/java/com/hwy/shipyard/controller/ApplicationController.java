@@ -1,12 +1,10 @@
 package com.hwy.shipyard.controller;
 
 
-import com.hwy.shipyard.dataobject.Application;
 import com.hwy.shipyard.service.ApplicationService;
+import com.hwy.shipyard.dataobject.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("application")
@@ -49,6 +47,11 @@ public class ApplicationController {
     @PostMapping("/update/pass/not")
     public Object updateNotPass(String applicationId){
         return service.updateNotPass(applicationId);
+    }
+
+    @GetMapping("/update/state")
+    public Object getStateNum(){
+        return service.getStateNum();
     }
 
 

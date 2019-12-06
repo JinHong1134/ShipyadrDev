@@ -38,4 +38,7 @@ public interface MaintenanceRequestMapper {
 
     @Update("update maintenance_request set request_state=#{requestState} where request_id=#{requestId}")
     void updateState(String requestId,int requestState);
+
+    @Select("SELECT * FROM maintenance_request ORDER BY sort_id DESC LIMIT 1")
+    MaintenanceRequest getLast();
 }

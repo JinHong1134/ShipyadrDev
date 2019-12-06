@@ -50,9 +50,14 @@ public class JsonData implements Serializable {
 
 
 	// 失败，传入描述信息,状态码
-	public static JsonData buildError(String msg, Integer code) {
+	public static JsonData buildError(String msg,Object data ,Integer code) {
+		return new JsonData(code, data, msg);
+	}
+	// 失败，传入描述信息,状态码
+	public static JsonData buildError(String msg,Integer code) {
 		return new JsonData(code, null, msg);
 	}
+
 
 	// 成功，传入数据,及描述信息
 	public static JsonData buildSuccess(Object data, String msg) {

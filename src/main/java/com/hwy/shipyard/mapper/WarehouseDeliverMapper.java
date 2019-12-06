@@ -58,4 +58,11 @@ public interface WarehouseDeliverMapper {
     Integer getDeliverCount();
     @Select("SELECT COUNT(0) count FROM warehouse_deliver_detail")
     Integer getDeliverDetailCount();
+
+    @Select("SELECT * FROM warehouse_deliver_detail ORDER BY id DESC LIMIT 1")
+    WarehouseDeliverDetail getDetailLast();
+
+    @Select("SELECT * FROM warehouse_deliver ORDER BY id DESC LIMIT 1")
+    WarehouseDeliver getLast();
+
 }

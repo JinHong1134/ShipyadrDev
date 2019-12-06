@@ -1,6 +1,5 @@
 package com.hwy.shipyard.mapper;
 
-import com.hwy.shipyard.dataobject.WarehouseDeliver;
 import com.hwy.shipyard.dataobject.WarehouseEntry;
 import com.hwy.shipyard.dataobject.WarehouseEntryDetail;
 import org.apache.ibatis.annotations.*;
@@ -60,4 +59,10 @@ public interface WarehouseEntryMapper {
 
     @Select("SELECT *,max(id) FROM warehouse_entry")
     WarehouseEntry getNewWarehouseEntry();
+
+    @Select("SELECT * FROM warehouse_entry ORDER BY id DESC LIMIT 1")
+    WarehouseEntry getLast();
+
+    @Select("SELECT * FROM warehouse_entry_detail ORDER BY warehouse_entry_detail_id DESC LIMIT 1")
+    WarehouseEntryDetail getDetailLast();
 }

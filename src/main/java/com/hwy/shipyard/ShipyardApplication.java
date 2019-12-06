@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Properties;
 
-
 @MapperScan("com.hwy.shipyard.mapper")
 @SpringBootApplication
 public class ShipyardApplication {

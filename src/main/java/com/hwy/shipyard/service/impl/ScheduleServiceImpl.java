@@ -80,23 +80,29 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Object check(){
-        int i = 7;//从7号开始
-        int count = mapper.getCount()+i-1;
+        int last = mapper.getLast().getSortId();
+        int i = last;
+        int count = mapper.getCount();
 
         while (true) {
-            if (i==count-1){
+            if (last -i ==count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            Schedule schedule = mapper.getBySId(i);
+            try {
+                Schedule schedule = mapper.getBySId(i);
 
-            String s1 = schedule.getScheduleCheck();
+                String s1 = schedule.getScheduleCheck();
 
-            String s2 = EncryptUtils.saltEncrypt(schedule.toString(), "fkn");
+                String s2 = EncryptUtils.saltEncrypt(schedule.toString(), "fkn");
 
-            if (s1.equals(s2)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(schedule, "编号为" + schedule.getScheduleId() + "的记录与预期不符");
+                if (s1.equals(s2)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(schedule, "编号为" + schedule.getScheduleId() + "的记录与预期不符");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+mapper.getBySId(i).getScheduleId()+"前一条记录被删除",mapper.getBySId(i).getScheduleId(),0);
             }
 
         }
@@ -134,5 +140,15 @@ public class ScheduleServiceImpl implements ScheduleService {
             return JsonData.buildError("更新失败");
         }
 
+    }
+
+    @Override
+    public Object getStateNum() {
+        try{
+            return JsonData.buildSuccess(mapper.getStateNum());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError("查询失败");
+        }
     }
 }

@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 
 import com.hwy.shipyard.dataobject.Role;
 import com.hwy.shipyard.dataobject.User;
-import com.hwy.shipyard.dataobject.UserRole;
 import com.hwy.shipyard.mapper.RoleMapper;
 import com.hwy.shipyard.mapper.UserMapper;
 import com.hwy.shipyard.service.UserService;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -55,7 +55,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Object getUserByUserName(String userName) {
         try {
-            return JsonData.buildSuccess(userMapper.getUserByUsername(userName), 0);
+            User user = userMapper.getUserByUsername(userName);
+            List<User> users = new ArrayList<>();
+            users.add(user);
+            return JsonData.buildSuccess(users);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonData.buildError("失败",-1);
@@ -65,9 +68,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Object addUser(User user) {
-        String password = user.getUserPassword();
-        user.setUserPassword(new SimpleHash("md5",password,"fkn",2).toString());
-        List<Role> roles = user.getRoleList();
         try {
             userMapper.addUser(user);
 
@@ -90,9 +90,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Object updateUser(User user) {
+    public Object updateUserRoot(User user) {
         try {
-            userMapper.updateUser(user);
+            userMapper.updateUserRoot(user);
             return JsonData.buildSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUserByUsername(String username) {
+    public User getUserRoleByUsername(String username) {
 
         User user = userMapper.getUserByUsername(username);
 
@@ -135,5 +135,34 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
             return JsonData.buildError();
         }
+    }
+
+    @Override
+    public Object updateUserInfo(User user) {
+        try{
+            userMapper.updateUserAdmin(user);
+            return JsonData.buildSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError();
+        }
+    }
+
+    @Override
+    public Object updateUserPwd(String userId, String oldUserPassword, String newUserPassword) {
+        oldUserPassword = new SimpleHash("md5",oldUserPassword,"fkn",2).toString();
+        newUserPassword = new SimpleHash("md5",newUserPassword,"fkn",2).toString();
+        String pwd = userMapper.getUserById(userId).getUserPassword();
+        System.out.println(oldUserPassword+"  "+newUserPassword);
+        if(oldUserPassword.equals(pwd)) {
+            try {
+                userMapper.updateUserPwd(userId, oldUserPassword, newUserPassword);
+                return JsonData.buildSuccess();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError();
+            }
+        }else
+            return JsonData.buildSuccess("密码不一致",1);
     }
 }

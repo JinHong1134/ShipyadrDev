@@ -3,7 +3,6 @@ package com.hwy.shipyard.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.hwy.shipyard.dataobject.Purchase;
-import org.springframework.stereotype.Service;
 
 
 import java.util.Date;
@@ -67,4 +66,6 @@ public interface PurchaseService {
      * @return
      */
     int updateState(String purchaseId, int purchaseState);
+
+    Object getStateNum();
 }

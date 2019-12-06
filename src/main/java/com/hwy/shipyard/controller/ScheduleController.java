@@ -1,7 +1,7 @@
 package com.hwy.shipyard.controller;
 
-import com.hwy.shipyard.dataobject.Schedule;
 import com.hwy.shipyard.service.ScheduleService;
+import com.hwy.shipyard.dataobject.Schedule;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +46,10 @@ public class ScheduleController {
     @PostMapping("/update/not")
     public Object updateNotPass(String scheduleId){
         return service.updateNotPass(scheduleId);
+    }
+
+    @GetMapping("/update/state")
+    public Object getStateNum(){
+        return service.getStateNum();
     }
 }

@@ -1,8 +1,6 @@
 package com.hwy.shipyard.service;
 
-import com.hwy.shipyard.dataobject.Role;
 import com.hwy.shipyard.dataobject.User;
-import com.hwy.shipyard.dataobject.UserRole;
 
 
 public interface UserService {
@@ -55,10 +53,10 @@ public interface UserService {
      * @param user User 对象
      * @return 0：更新成功， -1：更新失败
      */
-    Object updateUser(User user);
+    Object updateUserRoot(User user);
 
 
-    User getUserByUsername(String username);
+    User getUserRoleByUsername(String username);
 
     /**
      * 添加用户角色
@@ -70,4 +68,7 @@ public interface UserService {
     Object delUserRole(String userId);
 
 
+    Object updateUserInfo(User user);
+
+    Object updateUserPwd(String userId, String oldUserPassword, String newUserPassword);
 }

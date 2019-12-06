@@ -1,8 +1,8 @@
 package com.hwy.shipyard.controller;
 
+import com.hwy.shipyard.service.UserService;
 import com.hwy.shipyard.dataobject.User;
 import com.hwy.shipyard.dataobject.UserQuery;
-import com.hwy.shipyard.service.UserService;
 import com.hwy.shipyard.utils.JsonData;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -31,7 +31,7 @@ public class PublicController {
     }
 
 
-    @RequestMapping("not_permit")
+    @RequestMapping("not_permission")
     public JsonData notPermit(){
         return JsonData.buildSuccess("温馨提示：拒绝访问，没权限",-3);
     }
@@ -85,6 +85,7 @@ public class PublicController {
         User user = userService.getUserById(userId);
         return JsonData.buildSuccess(user);
     }
+
 
 
 

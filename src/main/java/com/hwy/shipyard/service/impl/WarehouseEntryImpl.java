@@ -2,22 +2,16 @@ package com.hwy.shipyard.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hwy.shipyard.service.WarehouseEntryService;
 import com.hwy.shipyard.dataobject.WarehouseEntry;
 import com.hwy.shipyard.dataobject.WarehouseEntryDetail;
-import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.mapper.WarehouseEntryMapper;
-import com.hwy.shipyard.service.WarehouseEntryService;
 import com.hwy.shipyard.utils.JsonData;
-import com.hwy.shipyard.utils.SignatureRsa;
-import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static com.hwy.shipyard.utils.EncryptUtils.saltEncrypt;
 
@@ -136,21 +130,26 @@ public class WarehouseEntryImpl implements WarehouseEntryService {
     //校验入库单，正确返回0，发生篡改返回第一条被篡改的记录
     @Override
     public Object checkEntry() {
-        int i = 7;
+        WarehouseEntry warehouseEntryLast = warehouseEntryMapper.getLast();
+        int last = warehouseEntryLast.getId();
         int count = warehouseEntryMapper.getEntryCount();
+        int i =last;
         while(true){
-            if (i==count-1){
-                return JsonData.buildSuccess(null,2);
-            }
-            WarehouseEntry warehouseEntry = warehouseEntryMapper.getEntry(i);
-            String checkBits = warehouseEntry.getWarehouseEntryCheckBits();
-            WarehouseEntry warehouseEntry1 = warehouseEntryMapper.getEntry(i-1);
-            String pre = warehouseEntry1.getWarehouseEntryCheckBits();
-            String check = saltEncrypt(warehouseEntry1.toString()+pre,"fkn");
-            if (check.equals(checkBits)){
-                i++;
-            }else {
-                return JsonData.buildSuccess(warehouseEntryMapper.getEntry(i));
+            if (last-i == count -1) return JsonData.buildSuccess(null,2);
+            try {
+                WarehouseEntry warehouseEntry = warehouseEntryMapper.getEntry(i);
+                String checkBits = warehouseEntry.getWarehouseEntryCheckBits();
+                WarehouseEntry warehouseEntry1 = warehouseEntryMapper.getEntry(i - 1);
+                String pre = warehouseEntry1.getWarehouseEntryCheckBits();
+                String check = saltEncrypt(warehouseEntry.toString() + pre, "fkn");
+                if (check.equals(checkBits)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(warehouseEntryMapper.getEntry(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError();
             }
         }
 
@@ -158,44 +157,32 @@ public class WarehouseEntryImpl implements WarehouseEntryService {
 
     @Override
     public Object checkEntryDetail() {
-        int i = 15;
-        int count = warehouseEntryMapper.getEntryDetailCount()+i;
+        int last = warehouseEntryMapper.getDetailLast().getWarehouseEntryDetailId();
+        int i =last;
+        int count = warehouseEntryMapper.getEntryDetailCount();
         while(true){
-            if (i==count-5){
+            if (last-i == count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            WarehouseEntryDetail warehouseEntryDetail = warehouseEntryMapper.getWarehouseEntryDetail(i);
-            String checkBits = warehouseEntryDetail.getWarehouseEntryDetailCheckBits();
-            WarehouseEntryDetail warehouseEntryDetail1 = warehouseEntryMapper.getWarehouseEntryDetail(i-1);
-            String pre = warehouseEntryDetail1.getWarehouseEntryDetailCheckBits();
-            String check = saltEncrypt(warehouseEntryDetail.toString()+pre,"fkn");
-            if (check.equals(checkBits)){
-                i++;
-            }else {
-                return JsonData.buildSuccess(warehouseEntryMapper.getWarehouseEntryDetail(i));
+            try {
+                WarehouseEntryDetail warehouseEntryDetail = warehouseEntryMapper.getWarehouseEntryDetail(i);
+                String checkBits = warehouseEntryDetail.getWarehouseEntryDetailCheckBits();
+                WarehouseEntryDetail warehouseEntryDetail1 = warehouseEntryMapper.getWarehouseEntryDetail(i - 1);
+                String pre = warehouseEntryDetail1.getWarehouseEntryDetailCheckBits();
+                String check = saltEncrypt(warehouseEntryDetail.toString() + pre, "fkn");
+                if (check.equals(checkBits)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(warehouseEntryMapper.getWarehouseEntryDetail(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError();
             }
         }
 
     }
 
-    /*public static void main(String[] args) {
 
-        Date date = new Date();
-        WarehouseEntry warehouseEntry = new WarehouseEntry();
-        warehouseEntry.setEntryState(0);
-        warehouseEntry.setWarehouseEntryField0(null);
-        warehouseEntry.setOperatorName("rjh");
-        warehouseEntry.setRemark("r");
-        warehouseEntry.setEntryTime(date);
-        warehouseEntry.setOperatorName("rjh");
-        warehouseEntry.setWarehouseEntryId("A1");
-        warehouseEntry.setWarehouseId("A1");
-        warehouseEntry.setWarehouseName("JH");
-        System.out.println(warehouseEntry.toString());
-        WarehouseEntryImpl warehouse = new WarehouseEntryImpl();
-
-        warehouse.addWarehouseEntry(warehouseEntry);
-
-    }*/
 
 }

@@ -20,6 +20,8 @@ public interface ApplicationService {
 
     Object check();
 
+    Object getStateNum();
+
 
 
 }

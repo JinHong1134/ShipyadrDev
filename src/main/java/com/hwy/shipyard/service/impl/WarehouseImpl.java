@@ -3,9 +3,9 @@ package com.hwy.shipyard.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import com.hwy.shipyard.service.WarehouseService;
 import com.hwy.shipyard.dataobject.Warehouse;
 import com.hwy.shipyard.mapper.WarehouseMapper;
-import com.hwy.shipyard.service.WarehouseService;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

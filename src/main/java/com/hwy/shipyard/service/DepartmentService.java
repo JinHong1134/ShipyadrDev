@@ -1,6 +1,5 @@
 package com.hwy.shipyard.service;
 
-import com.github.pagehelper.PageInfo;
 import com.hwy.shipyard.dataobject.Department;
 
 public interface DepartmentService {

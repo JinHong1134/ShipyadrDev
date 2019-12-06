@@ -2,6 +2,7 @@ package com.hwy.shipyard.dataobject;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hwy.shipyard.enums.RequestStateEnum;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -68,6 +69,8 @@ public class Allocation {
      * 校验位
      */
     private String allocationCheckBits;
+
+    private int allocationState = RequestStateEnum.UNCHECK.getCode();
 
     /**
      * 预留字段

@@ -2,8 +2,6 @@ package com.hwy.shipyard.mapper;
 
 
 import com.hwy.shipyard.dataobject.User;
-import com.hwy.shipyard.dataobject.Warehouse;
-import com.hwy.shipyard.dataobject.WarehouseDeliver;
 import org.apache.ibatis.annotations.*;
 import java.util.List;
 
@@ -31,7 +29,8 @@ public interface UserMapper {
     @Delete("DELETE FROM user WHERE user_id = #{userId} ")
     int delUser(String userId);
 
-    @Update("UPDATE user SET user_password=#{userPassword},"+
+
+    @Update("UPDATE user SET "+
             "user_name=#{userName}," +
             "user_sex=#{userSex}," +
             "user_birthday=#{userBirthday}," +
@@ -43,5 +42,22 @@ public interface UserMapper {
             "user_remark=#{userRemark}," +
             "user_state=#{userState} " +
             "WHERE user_id = #{userId}" )
-    int updateUser(User user);
+    int updateUserRoot(User user);
+
+    @Update("UPDATE user SET "+
+            "user_name=#{userName}," +
+            "user_sex=#{userSex}," +
+            "user_birthday=#{userBirthday}," +
+            "user_address=#{userAddress}," +
+            "user_phone=#{userPhone}," +
+            "user_email=#{userEmail}," +
+            "user_remark=#{userRemark} " +
+            "WHERE user_id = #{userId}" )
+    int updateUserAdmin(User user);
+
+    @Update("UPDATE user SET user_password=#{newUserPassword} "+
+            "WHERE user_id = #{userId} and user_password = #{oldUserPassword}" )
+    int updateUserPwd(String userId,String oldUserPassword,String newUserPassword);
+
+
 }

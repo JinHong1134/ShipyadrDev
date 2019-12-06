@@ -45,4 +45,9 @@ public interface ApplicationMapper {
     @Select("select count(*) count from application")
     Integer getCount();
 
+    @Select("SELECT count(*) from application WHERE application_state = 0")
+    Integer getStateNum();
+
+    @Select("SELECT * FROM application ORDER BY sort_id DESC LIMIT 1")
+    Application getLast();
 }

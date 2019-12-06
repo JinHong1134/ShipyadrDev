@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -18,8 +17,8 @@ import java.util.List;
 public interface AllocationMapper {
 
     //添加调拨单
-    @Insert("INSERT INTO warehouse_allocation(allocation_id,warehouse_deliver_id,warehouse_deliver,warehouse_entry_id,warehouse_entry,operator_name,allocation_time,remark,field) " +
-            "VALUES(#{allocationId},#{warehouseEntryId},#{warehouseDeliver},#{warehouseEntryId},#{warehouseEntry},#{operatorName},#{allocationTime},#{remark},#{field})")
+    @Insert("INSERT INTO warehouse_allocation(allocation_id,warehouse_deliver_id,warehouse_deliver,warehouse_entry_id,warehouse_entry,operator_name,allocation_time,remark,field,allocation_state) " +
+            "VALUES(#{allocationId},#{warehouseEntryId},#{warehouseDeliver},#{warehouseEntryId},#{warehouseEntry},#{operatorName},#{allocationTime},#{remark},#{field},#{allocationState})")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
     int addAllocation(Allocation allocation);
 
@@ -62,4 +61,18 @@ public interface AllocationMapper {
     Integer getAllocationCount();
     @Select("SELECT count(0) FROM warehouse_allocation_detail")
     Integer getAllocationDetailCount();
+
+
+    @Select("SELECT count(0) FROM warehouse_allocation WHERE allocation_state = 0")
+    Integer getAllocation0();
+
+    @Update("UPDATE warehouse_allocation SET allocation_state = #{allocationState} WHERE allocation_id = #{allocationId}")
+    int updateState(int allocationState, String allocationId);
+
+    @Select("SELECT * FROM warehouse_allocation ORDER BY id DESC LIMIT 1")
+    Allocation getLast();
+
+    @Select("SELECT * FROM warehouse_allocation_detail ORDER BY id DESC LIMIT 1")
+    AllocationDetail getDetailLast();
+
 }

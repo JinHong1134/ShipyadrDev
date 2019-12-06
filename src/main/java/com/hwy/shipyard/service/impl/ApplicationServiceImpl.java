@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ApplicationServceImpl implements ApplicationService {
+public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     private ApplicationMapper mapper;
 
@@ -91,29 +91,42 @@ public class ApplicationServceImpl implements ApplicationService {
 
     @Override
     public Object check() {
-
-            int i = 23;//从23号开始
-            int count = mapper.getCount()+i-1;
+        int last = mapper.getLast().getSortId();
+            int i = last;
+            int count = mapper.getCount();
 
             while (true) {
-                if (i==count-1){
+                if (last-i==count-1){
                     return JsonData.buildSuccess(null,2);
                 }
-                Application application = mapper.getBySId(i);
+                try {
+                    Application application = mapper.getBySId(i);
 
-                String s1 = application.getApplicationCheck();
-                System.out.println(s1);
+                    String s1 = application.getApplicationCheck();
 
-                String s2 = EncryptUtils.saltEncrypt(application.toString(), "fkn");
-                System.out.println(s2);
+                    String s2 = EncryptUtils.saltEncrypt(application.toString(), "fkn");
 
-                if (s1.equals(s2)) {
-                    i++;
-                } else {
-                    return JsonData.buildSuccess(application, "编号为" + application.getApplicationId() + "的记录与预期不符");
+                    if (s1.equals(s2)) {
+                        i--;
+                    } else {
+                        return JsonData.buildSuccess(application, "编号为" + application.getApplicationId() + "的记录与预期不符");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return JsonData.buildError("编号为"+mapper.getBySId(i).getApplicationId()+"前一条记录被删除",mapper.getBySId(i).getApplicationId(),0);
+
                 }
-
             }
+    }
+
+    @Override
+    public Object getStateNum() {
+        try{
+            return JsonData.buildSuccess(mapper.getStateNum());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError("查找失败");
+        }
     }
 
     @Override

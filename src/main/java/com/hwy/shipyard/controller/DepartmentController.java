@@ -1,7 +1,7 @@
 package com.hwy.shipyard.controller;
 
-import com.hwy.shipyard.dataobject.Department;
 import com.hwy.shipyard.service.DepartmentService;
+import com.hwy.shipyard.dataobject.Department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

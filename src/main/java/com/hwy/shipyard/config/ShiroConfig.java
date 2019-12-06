@@ -2,15 +2,10 @@ package com.hwy.shipyard.config;
 
 
 
-import org.apache.shiro.authc.AuthenticationToken;
-
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisManager;
-import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -66,11 +61,12 @@ public class ShiroConfig {
         //仓储部门
         filterChainDefinitionMap.put("/warehouse/add","roleOrFilter[root,warehouse_root]");
         filterChainDefinitionMap.put("/warehouse/del","roleOrFilter[root,warehouse_root]");
-        filterChainDefinitionMap.put("/warehouse/allocation/**","roleOrFilter[root,warehouse_root]");
+        filterChainDefinitionMap.put("/warehouse/allocation/state/**","roleOrFilter[root,warehouse_root]");
         filterChainDefinitionMap.put("/warehouse/**","roleOrFilter[root,warehouse_admin,warehouse_root]");
 
         //采购部门
         filterChainDefinitionMap.put("/purchase/apply/check","roleOrFilter[root,purchase_root]");
+        filterChainDefinitionMap.put("/purchase/state","roleOrFilter[root,purchase_root]");
         filterChainDefinitionMap.put("/purchase/**","roleOrFilter[root,purchase_admin,purchase_root]");
         filterChainDefinitionMap.put("/product/add","roleOrFilter[root,purchase_admin,purchase_root]");
 
@@ -87,7 +83,8 @@ public class ShiroConfig {
 
         //后台管理系统仅root用户可访问
 
-        filterChainDefinitionMap.put("/sys/user/update","authc");
+        filterChainDefinitionMap.put("/sys/user/update/info","authc");
+        filterChainDefinitionMap.put("/sys/user/update/pwd","authc");
         filterChainDefinitionMap.put("/sys/**","roleOrFilter[root]");
         filterChainDefinitionMap.put("/check/**","roleOrFilter[root]");
 

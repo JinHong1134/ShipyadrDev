@@ -2,11 +2,9 @@ package com.hwy.shipyard.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hwy.shipyard.dataobject.RequestReport;
-import com.hwy.shipyard.dataobject.ScheduleReport;
-import com.hwy.shipyard.mapper.RequestReportMapper;
-import com.hwy.shipyard.mapper.ScheduleReportMapper;
 import com.hwy.shipyard.service.RequestReportService;
+import com.hwy.shipyard.dataobject.RequestReport;
+import com.hwy.shipyard.mapper.RequestReportMapper;
 import com.hwy.shipyard.utils.EncryptUtils;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,23 +77,30 @@ public class RequestReportServiceImpl implements RequestReportService {
 
     @Override
     public Object check() {
-        int i = 2;//从2号开始
-        int count = mapper.getCount()+i-1;
+        int last = mapper.getLast().getSortId();
+        int i = last;
+        int count = mapper.getCount();
 
         while (true) {
-            if (i==count-1){
+            if (last - i==count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            RequestReport requestReport = mapper.getBySId(i);
+            try {
+                RequestReport requestReport = mapper.getBySId(i);
 
-            String s1 = requestReport.getReportCheck();
+                String s1 = requestReport.getReportCheck();
 
-            String s2 = EncryptUtils.saltEncrypt(requestReport.toString(), "fkn");
+                String s2 = EncryptUtils.saltEncrypt(requestReport.toString(), "fkn");
 
-            if (s1.equals(s2)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(requestReport, "编号为" + requestReport.getRequestId() + "的记录与预期不符");
+                if (s1.equals(s2)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(requestReport, "编号为" + requestReport.getRequestId() + "的记录与预期不符");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+mapper.getBySId(i).getRequestId()+"前一条记录被删除",mapper.getBySId(i).getRequestId(),0);
+
             }
 
         }

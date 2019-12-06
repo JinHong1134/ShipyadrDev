@@ -3,7 +3,6 @@ package com.hwy.shipyard.service;
 
 import com.hwy.shipyard.dataobject.WarehouseDeliver;
 import com.hwy.shipyard.dataobject.WarehouseDeliverDetail;
-import org.springframework.stereotype.Service;
 
 
 public interface WarehouseDeliverService  {

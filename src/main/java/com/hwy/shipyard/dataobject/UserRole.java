@@ -25,4 +25,6 @@ public class UserRole {
      * 用户角色描述
      */
     private String userRoleDescription;
+
+    private String roleDescription;
 }

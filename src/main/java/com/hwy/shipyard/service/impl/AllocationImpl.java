@@ -2,10 +2,10 @@ package com.hwy.shipyard.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hwy.shipyard.service.AllocationService;
 import com.hwy.shipyard.dataobject.Allocation;
 import com.hwy.shipyard.dataobject.AllocationDetail;
 import com.hwy.shipyard.mapper.AllocationMapper;
-import com.hwy.shipyard.service.AllocationService;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class AllocationImpl implements AllocationService {
 
             String preHash;
             allocationMapper.addAllocation(allocation);
-            if (allocation.getId() == 1){
+            if (allocation.getId() == null){
                 preHash = "fkn";
             }else {
                 preHash = allocationMapper.getAllocationById(allocation.getId()-1).getAllocationCheckBits();
@@ -52,13 +52,13 @@ public class AllocationImpl implements AllocationService {
     @Override
     public Object addAllocationDetail(AllocationDetail allocationDetail) {
         try{
-            String preHash;
+            String preCheck;
             if (allocationDetail.getId() == 1){
-                preHash = "fkn";
+                preCheck = "fkn";
             }else {
                 allocationMapper.addAllocationDetail(allocationDetail);
             }
-            String preCheck = allocationMapper.getAllocationDetailById(allocationDetail.getId()-1).getAllocationDetailCheckBits();
+            preCheck = allocationMapper.getAllocationDetailById(allocationDetail.getId()-1).getAllocationDetailCheckBits();
             String str = allocationDetail.toString()+preCheck;
             String checkBits = saltEncrypt(str,"fkn");
             allocationMapper.updateDetailCheck(checkBits,allocationDetail.getId());
@@ -132,44 +132,76 @@ public class AllocationImpl implements AllocationService {
 
     @Override
     public Object checkAllocation() {
-        int i = 2;
+        int last = allocationMapper.getLast().getId();
+        int i = last;
         int count = allocationMapper.getAllocationCount();
         while (true){
-            if (i== count-1){
+            if (last - i== count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            Allocation allocation = allocationMapper.getAllocationById(i);
-            String checkBits = allocation.getAllocationCheckBits();
-            Allocation allocation1 = allocationMapper.getAllocationById(i-1);
-            String pre = allocation1.getAllocationCheckBits();
-            String check = saltEncrypt(allocation.toString(),"fkn ")+pre;
-            if (check.equals(checkBits)){
-                i++;
-            }else{
-                return JsonData.buildSuccess(allocationMapper.getAllocationById(i));
+            try {
+                Allocation allocation = allocationMapper.getAllocationById(i);
+                String checkBits = allocation.getAllocationCheckBits();
+                Allocation allocation1 = allocationMapper.getAllocationById(i - 1);
+                String pre = allocation1.getAllocationCheckBits();
+                String check = saltEncrypt(allocation.toString()+pre, "fkn ");
+                if (check.equals(checkBits)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(allocationMapper.getAllocationById(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+allocationMapper.getAllocationById(i).getAllocationId()+"前一条记录被删除",allocationMapper.getAllocationById(i).getAllocationId(),0);
             }
         }
     }
 
     @Override
     public Object checkAllocationDetail() {
-        int i = 2;
+        int last =allocationMapper.getDetailLast().getId();
+        int i = last;
         int count = allocationMapper.getAllocationDetailCount();
         while (true){
-            if (i==count-1){
-
+            if (last - i==count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            AllocationDetail allocationDetail = allocationMapper.getAllocationDetailById(i);
-            AllocationDetail allocationDetail1 = allocationMapper.getAllocationDetailById(i-1);
-            String pre = allocationDetail1.getAllocationDetailCheckBits();
-            String checkBits = allocationDetail.getAllocationDetailCheckBits();
-            String check = saltEncrypt(allocationDetail.toString(),"fkn");
-            if (check.equals(checkBits)){
-                i++;
-            }else{
-                return JsonData.buildSuccess(allocationMapper.getAllocationDetailById(i));
+            try {
+                AllocationDetail allocationDetail = allocationMapper.getAllocationDetailById(i);
+                AllocationDetail allocationDetail1 = allocationMapper.getAllocationDetailById(i - 1);
+                String pre = allocationDetail1.getAllocationDetailCheckBits();
+                String checkBits = allocationDetail.getAllocationDetailCheckBits();
+                String check = saltEncrypt(allocationDetail.toString()+pre, "fkn");
+                if (check.equals(checkBits)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(allocationMapper.getAllocationDetailById(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+allocationMapper.getAllocationById(i).getAllocationId()+"前一条记录被删除",allocationMapper.getAllocationById(i).getAllocationId(),0);
             }
+
+        }
+    }
+
+    @Override
+    public Object getStateNum() {
+        try{
+            return JsonData.buildSuccess(allocationMapper.getAllocation0());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError("查询失败");
+        }
+    }
+
+    @Override
+    public Object updateState(int state, String allocationId) {
+        try{
+            return JsonData.buildSuccess(allocationMapper.updateState(state,allocationId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonData.buildError("更新失败");
         }
     }
 }

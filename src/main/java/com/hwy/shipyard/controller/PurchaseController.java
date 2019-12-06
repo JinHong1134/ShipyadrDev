@@ -5,15 +5,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hwy.shipyard.converter.PurchaseFormToPurchaseConverter;
 import com.hwy.shipyard.dataobject.Purchase;
+import com.hwy.shipyard.exception.PurchaseException;
+import com.hwy.shipyard.service.impl.PurchaseDetailServiceImpl;
+import com.hwy.shipyard.service.impl.PurchaseServiceImpl;
 import com.hwy.shipyard.dataobject.PurchaseDetail;
 import com.hwy.shipyard.enums.PurchaseStateEnum;
 import com.hwy.shipyard.enums.ResultEnum;
-import com.hwy.shipyard.exception.PurchaseException;
 import com.hwy.shipyard.form.PurchaseDetailForm;
 import com.hwy.shipyard.form.PurchaseForm;
-import com.hwy.shipyard.service.PurchaseDetailService;
-import com.hwy.shipyard.service.impl.PurchaseDetailServiceImpl;
-import com.hwy.shipyard.service.impl.PurchaseServiceImpl;
 import com.hwy.shipyard.utils.KeyUtils;
 import com.hwy.shipyard.utils.ResultVOUtils;
 import com.hwy.shipyard.vo.PurchaseVO;
@@ -140,5 +139,10 @@ public class PurchaseController {
         Map<String, String> map = new HashMap<>();
         map.put("id", result);
         return ResultVOUtils.success(map);
+    }
+
+    @GetMapping("/state")
+    public Object getStateNum(){
+        return purchaseService.getStateNum();
     }
 }

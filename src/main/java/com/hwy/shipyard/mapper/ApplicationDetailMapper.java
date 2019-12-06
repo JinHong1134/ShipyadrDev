@@ -41,4 +41,7 @@ public interface ApplicationDetailMapper {
     @Select("select count(*) count from application_detail")
     Integer getCount();
 
+    @Select("SELECT * FROM application_detail ORDER BY sort_id DESC LIMIT 1")
+    ApplicationDetail getLast();
+
 }

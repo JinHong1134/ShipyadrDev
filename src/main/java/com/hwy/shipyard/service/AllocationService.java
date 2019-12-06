@@ -52,4 +52,13 @@ public interface AllocationService {
      */
     Object checkAllocation();
     Object checkAllocationDetail();
+
+    /**
+     * 获取未审核调拨单数量
+     * @param
+     * @return
+     */
+    Object getStateNum();
+
+    Object updateState(int state, String allocationId);
 }

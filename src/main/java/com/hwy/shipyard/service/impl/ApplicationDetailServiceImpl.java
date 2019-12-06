@@ -77,23 +77,29 @@ public class ApplicationDetailServiceImpl implements ApplicationDetailService {
 
     @Override
     public Object check() {
-        int i = 4;//从23号开始
-        int count = mapper.getCount()+i-1;
+        int last =mapper.getLast().getSortId();
+        int i = last;
+        int count = mapper.getCount();
 
         while (true) {
-            if (i==count-1){
+            if (last - i==count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            ApplicationDetail applicationDetail = mapper.getBySId(i);
+            try {
+                ApplicationDetail applicationDetail = mapper.getBySId(i);
 
-            String s1 = applicationDetail.getApplicationDetailCheck();
+                String s1 = applicationDetail.getApplicationDetailCheck();
 
-            String s2 = EncryptUtils.saltEncrypt(applicationDetail.toString(), "fkn");
+                String s2 = EncryptUtils.saltEncrypt(applicationDetail.toString(), "fkn");
 
-            if (s1.equals(s2)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(applicationDetail, "编号为" + applicationDetail.getApplicationDetailId() + "的记录与预期不符，对应的申请单id为"+applicationDetail.getApplicationId());
+                if (s1.equals(s2)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(applicationDetail, "编号为" + applicationDetail.getApplicationDetailId() + "的记录与预期不符，对应的申请单id为" + applicationDetail.getApplicationId());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+mapper.getBySId(i).getApplicationId()+"前一条记录被删除",mapper.getBySId(i).getApplicationId(),0);
             }
 
         }

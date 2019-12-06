@@ -1,7 +1,6 @@
 package com.hwy.shipyard.service;
 
 import com.hwy.shipyard.dataobject.ApplicationDetail;
-import org.springframework.web.bind.annotation.RestController;
 
 public interface ApplicationDetailService {
 

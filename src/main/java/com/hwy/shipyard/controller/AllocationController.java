@@ -5,10 +5,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.hwy.shipyard.dataobject.Allocation;
 import com.hwy.shipyard.dataobject.AllocationDetail;
-import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.service.AllocationService;
+import com.hwy.shipyard.dataobject.Allocation;
+import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -78,6 +78,14 @@ public class AllocationController {
         return allocationService.getAllocationById(allocationId);
     }
 
+    @GetMapping("/state")
+    public  Object getStateNum(){
+        return allocationService.getStateNum();
+    }
 
+    @GetMapping("/state/update")
+    public Object updateState(int state,String allocationId){
+        return allocationService.updateState(state,allocationId);
+    }
 
 }

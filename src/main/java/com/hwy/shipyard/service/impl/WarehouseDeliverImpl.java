@@ -4,11 +4,8 @@ package com.hwy.shipyard.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hwy.shipyard.dataobject.Allocation;
-import com.hwy.shipyard.dataobject.User;
 import com.hwy.shipyard.dataobject.WarehouseDeliver;
 import com.hwy.shipyard.dataobject.WarehouseDeliverDetail;
-import com.hwy.shipyard.mapper.ProductMapper;
 import com.hwy.shipyard.mapper.WarehouseDeliverMapper;
 import com.hwy.shipyard.service.WarehouseDeliverService;
 import com.hwy.shipyard.utils.JsonData;
@@ -99,21 +96,27 @@ public class WarehouseDeliverImpl implements WarehouseDeliverService {
     //校验出库单
     @Override
     public Object checkDeliver() {
-        int i = 12;
-        int count = warehouseDeliverMapper.getDeliverCount() + i;
+        int last = warehouseDeliverMapper.getLast().getId();
+        int i = last;
+        int count = warehouseDeliverMapper.getDeliverCount();
         while (true) {
-            if (i == count - 1) {
+            if (last - i == count - 1) {
                 return JsonData.buildSuccess(null, 2);
             }
-            WarehouseDeliver warehouseDeliver = warehouseDeliverMapper.getDeliver(i);
-            String checkBits = warehouseDeliver.getWarehouseDeliverCheckBits();
-            WarehouseDeliver warehouseDeliver1 = warehouseDeliverMapper.getDeliver(i - 1);
-            String pre = warehouseDeliver1.getWarehouseDeliverCheckBits();
-            String check = saltEncrypt(warehouseDeliver.toString() + pre, "fkn");
-            if (checkBits.equals(check)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(warehouseDeliverMapper.getDeliver(i));
+            try {
+                WarehouseDeliver warehouseDeliver = warehouseDeliverMapper.getDeliver(i);
+                String checkBits = warehouseDeliver.getWarehouseDeliverCheckBits();
+                WarehouseDeliver warehouseDeliver1 = warehouseDeliverMapper.getDeliver(i - 1);
+                String pre = warehouseDeliver1.getWarehouseDeliverCheckBits();
+                String check = saltEncrypt(warehouseDeliver.toString() + pre, "fkn");
+                if (checkBits.equals(check)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(warehouseDeliverMapper.getDeliver(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("单号为"+warehouseDeliverMapper.getDeliver(i).getWarehouseDeliverId()+"前一条记录被删除",warehouseDeliverMapper.getDeliver(i).getWarehouseDeliverId(),1);
             }
         }
     }
@@ -121,21 +124,27 @@ public class WarehouseDeliverImpl implements WarehouseDeliverService {
     //校验出库明细单
     @Override
     public Object checkDetail() {
-        int i = 12;
-        int count = warehouseDeliverMapper.getDeliverDetailCount() + i;
+        int last = warehouseDeliverMapper.getDetailLast().getId();
+        int i = last;
+        int count = warehouseDeliverMapper.getDeliverDetailCount();
         while (true) {
-            if (i == count - 1) {
+            if (last - i == count - 1) {
                 return JsonData.buildSuccess(null, 2);
             }
-            WarehouseDeliverDetail warehouseDeliverDetail = warehouseDeliverMapper.getDetailById(i);
-            String checkBits = warehouseDeliverDetail.getWarehouseDeliverDetailCheckBits();
-            WarehouseDeliverDetail warehouseDeliverDetail1 = warehouseDeliverMapper.getDetailById(i - 1);
-            String pre = warehouseDeliverDetail1.getWarehouseDeliverDetailCheckBits();
-            String check = saltEncrypt(warehouseDeliverDetail.toString() + pre, "fkn");
-            if (checkBits.equals(check)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(warehouseDeliverMapper.getDetailById(i));
+            try {
+                WarehouseDeliverDetail warehouseDeliverDetail = warehouseDeliverMapper.getDetailById(i);
+                String checkBits = warehouseDeliverDetail.getWarehouseDeliverDetailCheckBits();
+                WarehouseDeliverDetail warehouseDeliverDetail1 = warehouseDeliverMapper.getDetailById(i - 1);
+                String pre = warehouseDeliverDetail1.getWarehouseDeliverDetailCheckBits();
+                String check = saltEncrypt(warehouseDeliverDetail.toString() + pre, "fkn");
+                if (checkBits.equals(check)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(warehouseDeliverMapper.getDetailById(i));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("单号为"+warehouseDeliverMapper.getDeliver(i).getWarehouseDeliverId()+"前一条记录被删除");
             }
         }
     }

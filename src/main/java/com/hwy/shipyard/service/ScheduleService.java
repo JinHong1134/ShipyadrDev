@@ -16,4 +16,6 @@ public interface ScheduleService {
 
     Object updateNotPass(String scheduleId);
 
+    Object getStateNum();
+
 }

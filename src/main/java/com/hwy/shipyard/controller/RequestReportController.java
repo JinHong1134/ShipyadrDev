@@ -1,7 +1,7 @@
 package com.hwy.shipyard.controller;
 
-import com.hwy.shipyard.dataobject.RequestReport;
 import com.hwy.shipyard.service.RequestReportService;
+import com.hwy.shipyard.dataobject.RequestReport;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

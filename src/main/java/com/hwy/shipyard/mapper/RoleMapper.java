@@ -2,7 +2,6 @@ package com.hwy.shipyard.mapper;
 
 
 import com.hwy.shipyard.dataobject.Role;
-import com.hwy.shipyard.dataobject.UserRole;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -29,9 +28,9 @@ public interface RoleMapper {
 
 
     //更新用户权限
-    @Insert("INSERT INTO user_role(user_id,role_id,role_description) VALUES(#{userId},#{roleId},#{userRoleDescription}) ")
+    @Insert("INSERT INTO user_role(user_id,role_id,role_description) VALUES(#{userId},#{roleId},#{roleDescription}) ")
     @Options(useGeneratedKeys = true, keyProperty = "id",keyColumn="id")
-    int addUserRole(String userId,int roleId,String userRoleDescription);
+    int addUserRole(String userId,int roleId,String roleDescription);
 
     //删除用户所有权限
     @Delete("DELETE FROM user_role WHERE user_id = #{userId}")

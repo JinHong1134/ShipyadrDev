@@ -43,5 +43,11 @@ public interface ScheduleMapper {
     @Update("update schedule set schedule_state=#{scheduleState} where schedule_id=#{scheduleId}")
     void updateState(String scheduleId,int scheduleState);
 
+    @Select("SELECT count(0) FROM schedule WHERE schedule_state = 0")
+    Integer getStateNum();
+
+    @Select("SELECT * FROM schedule ORDER BY sort_id DESC LIMIT 1")
+    Schedule getLast();
+
 
 }

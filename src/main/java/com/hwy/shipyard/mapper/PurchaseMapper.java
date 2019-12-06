@@ -140,4 +140,8 @@ public interface PurchaseMapper {
 
     @Update("update purchase set purchase_state = #{purchaseState} where purchase_id = #{purchaseId}")
     int updateById(@Param("purchaseId") String purchaseId, @Param("purchaseState") Integer purchaseState);
+
+    @Select("SELECT count(0) FROM purchase WHERE purchase_state = 0")
+    Integer getStateNum();
+
 }

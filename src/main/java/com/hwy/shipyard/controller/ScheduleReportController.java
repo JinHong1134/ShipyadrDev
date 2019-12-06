@@ -1,8 +1,7 @@
 package com.hwy.shipyard.controller;
 
-import com.hwy.shipyard.dataobject.Schedule;
-import com.hwy.shipyard.dataobject.ScheduleReport;
 import com.hwy.shipyard.service.ScheduleReportService;
+import com.hwy.shipyard.dataobject.ScheduleReport;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

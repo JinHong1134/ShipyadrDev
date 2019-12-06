@@ -1,6 +1,5 @@
 package com.hwy.shipyard.converter;
 
-import com.google.gson.Gson;
 import com.hwy.shipyard.dataobject.Purchase;
 import com.hwy.shipyard.form.PurchaseForm;
 

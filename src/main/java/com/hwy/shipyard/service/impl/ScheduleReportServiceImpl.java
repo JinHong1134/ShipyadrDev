@@ -2,10 +2,9 @@ package com.hwy.shipyard.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hwy.shipyard.dataobject.Schedule;
+import com.hwy.shipyard.service.ScheduleReportService;
 import com.hwy.shipyard.dataobject.ScheduleReport;
 import com.hwy.shipyard.mapper.ScheduleReportMapper;
-import com.hwy.shipyard.service.ScheduleReportService;
 import com.hwy.shipyard.utils.EncryptUtils;
 import com.hwy.shipyard.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,23 +77,29 @@ public class ScheduleReportServiceImpl implements ScheduleReportService {
 
     @Override
     public Object check() {
-        int i = 2;//从2号开始
-        int count = mapper.getCount()+i-1;
+        int last = mapper.getLast().getSortId();
+        int i = last;
+        int count = mapper.getCount();
 
         while (true) {
-            if (i==count-1){
+            if (last - i==count-1){
                 return JsonData.buildSuccess(null,2);
             }
-            ScheduleReport scheduleReport = mapper.getBySId(i);
+            try {
+                ScheduleReport scheduleReport = mapper.getBySId(i);
 
-            String s1 = scheduleReport.getReportCheck();
+                String s1 = scheduleReport.getReportCheck();
 
-            String s2 = EncryptUtils.saltEncrypt(scheduleReport.toString(), "fkn");
+                String s2 = EncryptUtils.saltEncrypt(scheduleReport.toString(), "fkn");
 
-            if (s1.equals(s2)) {
-                i++;
-            } else {
-                return JsonData.buildSuccess(scheduleReport, "编号为" + scheduleReport.getScheduleId() + "的记录与预期不符");
+                if (s1.equals(s2)) {
+                    i--;
+                } else {
+                    return JsonData.buildSuccess(scheduleReport, "编号为" + scheduleReport.getScheduleId() + "的记录与预期不符");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return JsonData.buildError("编号为"+mapper.getBySId(i).getScheduleId()+"前一条记录被删除",mapper.getBySId(i).getScheduleId(),0);
             }
 
         }
