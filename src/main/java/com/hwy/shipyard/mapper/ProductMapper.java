@@ -16,10 +16,10 @@ public interface ProductMapper {
 
     //增加
     @Insert("insert into product (product_id,product_name,product_type,warehouse_name," +
-            "product_unit,product_stock,product_state,location,product_field0,product_field1," +
+            "product_unit,product_stock,product_specification,product_state,location,product_field0,product_field1," +
             "product_field2,product_field3,remark,operator,operation_time) values(#{productId}," +
             "#{productName},#{productType}," +
-            "#{warehouseName},#{productUnit},#{productStock},#{productState},#{location}," +
+            "#{warehouseName},#{productUnit},#{productStock},#{productSpecification},#{productState},#{location}," +
             "#{productField0},#{productField1},#{productField2},#{productField3},#{remark},#{operator},#{operationTime})")
     void add(Product product);
 

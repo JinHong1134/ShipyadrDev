@@ -2,8 +2,8 @@
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://10.141.47.42:5736/shipyard?serverTimezone=GMT%2B8&Unicode=true&characterEncoding=utf-8&useSSL=false
-    password: root
+    url: jdbc:mysql://192.168.2.116:80/shipyard?serverTimezone=GMT%2B8&Unicode=true&characterEncoding=utf-8&useSSL=false
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
   jackson:

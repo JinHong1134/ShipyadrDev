@@ -41,6 +41,12 @@ public class Product implements Serializable {
      */
     private String productUnit;
 
+
+    /**
+     * 产品规格
+     */
+    private String productSpecification;
+
     /**
      * 产品状态
      */
